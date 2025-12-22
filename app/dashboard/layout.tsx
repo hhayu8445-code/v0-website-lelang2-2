@@ -32,6 +32,14 @@ const sidebarLinks = [
   { href: "/dashboard/notifikasi", label: "Notifikasi", icon: Bell },
 ]
 
+const adminLinks = [
+  { href: "/admin", label: "Admin Dashboard", icon: LayoutDashboard },
+  { href: "/admin/users", label: "Kelola User", icon: User },
+  { href: "/admin/lelang", label: "Kelola Lelang", icon: Car },
+  { href: "/admin/transaksi", label: "Transaksi", icon: Wallet },
+  { href: "/admin/kyc", label: "Verifikasi KYC", icon: ShieldCheck },
+]
+
 function MobileSidebar({ user }: { user: any }) {
   return (
     <Sheet>
@@ -82,6 +90,23 @@ function MobileSidebar({ user }: { user: any }) {
                 </Button>
               </Link>
             ))}
+            
+            {/* Admin Links */}
+            {user.is_admin && (
+              <>
+                <div className="pt-2 pb-1">
+                  <p className="text-xs font-semibold text-muted-foreground px-3">ADMIN</p>
+                </div>
+                {adminLinks.map((link) => (
+                  <Link key={link.href} href={link.href}>
+                    <Button variant="ghost" className="w-full justify-start gap-3 text-primary">
+                      <link.icon className="w-5 h-5" />
+                      {link.label}
+                    </Button>
+                  </Link>
+                ))}
+              </>
+            )}
           </nav>
 
           {/* Back to Home */}
@@ -199,6 +224,23 @@ export default async function DashboardLayout({ children }: { children: React.Re
                     </Button>
                   </Link>
                 ))}
+                
+                {/* Admin Links */}
+                {user.is_admin && (
+                  <>
+                    <div className="pt-4 pb-2">
+                      <p className="text-xs font-semibold text-muted-foreground px-3">ADMIN PANEL</p>
+                    </div>
+                    {adminLinks.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        <Button variant="ghost" className="w-full justify-start gap-3 text-primary hover:bg-primary/10">
+                          <link.icon className="w-5 h-5" />
+                          {link.label}
+                        </Button>
+                      </Link>
+                    ))}
+                  </>
+                )}
               </nav>
 
               {/* Logout */}

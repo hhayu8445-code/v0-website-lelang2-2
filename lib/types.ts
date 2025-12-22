@@ -4,6 +4,11 @@ export interface User {
   phone?: string
   full_name: string
   id_card_number?: string
+  address?: string
+  city?: string
+  province?: string
+  postal_code?: string
+  country?: string
   kyc_status: "pending" | "verified" | "rejected"
   kyc_documents?: {
     ktp_url?: string
