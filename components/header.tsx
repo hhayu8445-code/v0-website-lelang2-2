@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { User, LogOut, LayoutDashboard } from "lucide-react"
+import { User, LogOut, LayoutDashboard, Shield } from "lucide-react"
 import { getCurrentUser, signOut } from "@/lib/actions/auth"
 import { MobileNav } from "@/components/mobile-nav"
 import Image from "next/image"
@@ -44,6 +44,14 @@ export async function Header() {
         <div className="flex items-center gap-2 sm:gap-3">
           {user ? (
             <>
+              {(user.is_admin === true || user.role === 'admin') && (
+                <Link href="/admin">
+                  <Button size="sm" className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-lg h-9 sm:h-10">
+                    <Shield className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Admin Panel</span>
+                  </Button>
+                </Link>
+              )}
               <Link href="/dashboard">
                 <Button variant="outline" size="sm" className="glass-button hidden sm:flex bg-transparent h-9 sm:h-10">
                   <LayoutDashboard className="h-4 w-4 mr-2" />
@@ -86,7 +94,7 @@ export async function Header() {
             </>
           )}
 
-          <MobileNav isLoggedIn={!!user} />
+          <MobileNav isLoggedIn={!!user} isAdmin={user?.is_admin === true || user?.role === 'admin'} />
         </div>
       </div>
     </header>
