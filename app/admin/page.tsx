@@ -1,4 +1,5 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { getSupabaseServerClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Car, CreditCard, FileCheck, TrendingUp, CheckCircle } from "lucide-react"
 import { formatRupiah } from "@/lib/utils/format"
@@ -7,8 +8,36 @@ import { Button } from "@/components/ui/button"
 
 export const dynamic = "force-dynamic"
 
+async function checkAdminAccess() {
+  const supabase = await getSupabaseServerClient()
+  
+  if (!supabase) {
+    redirect("/login")
+  }
+
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    redirect("/login")
+  }
+
+  const { data: profile } = await supabase
+    .from("users")
+    .select("is_admin, role")
+    .eq("id", user.id)
+    .single()
+
+  const isAdmin = profile?.is_admin === true || profile?.role === "admin"
+
+  if (!isAdmin) {
+    redirect("/dashboard")
+  }
+
+  return { user, profile }
+}
+
 async function getAdminStats() {
-  const supabase = await createServerClient()
+  const supabase = await getSupabaseServerClient()
 
   if (!supabase) {
     return {
@@ -61,6 +90,9 @@ async function getAdminStats() {
 }
 
 export default async function AdminDashboard() {
+  // Check admin access first
+  await checkAdminAccess()
+  
   const stats = await getAdminStats()
 
   const statCards = [

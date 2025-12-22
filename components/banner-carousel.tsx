@@ -15,26 +15,25 @@ interface BannerSlide {
 const BANNER_SLIDES: BannerSlide[] = [
   {
     id: 1,
+    image: "/images/promo-december-2025.png",
+    link: "/register",
+  },
+  {
+    id: 2,
     image:
       "https://b2c-cdn.carsome.id/cdn-cgi/image/format=auto,quality=60,width=1920/Consumer/Web_Banner_Pilihan_Cuan_9bd5a3fc11.png",
     link: "https://lelangmobil.com",
   },
   {
-    id: 2,
+    id: 3,
     image:
       "https://b2c-cdn.carsome.id/cdn-cgi/image/format=auto,quality=60,width=1920/Consumer/Homepage_Go_To_a3b663f01c.jpg",
     link: "https://lelangmobil.com",
   },
   {
-    id: 3,
-    image:
-      "https://b2c-cdn.carsome.id/cdn-cgi/image/format=auto,quality=60,width=1920/Consumer/Homepage_Trade_in_2025_f0d811486d.jpg",
-    link: "https://lelangmobil.com",
-  },
-  {
     id: 4,
     image:
-      "https://b2c-cdn.carsome.id/cdn-cgi/image/format=auto,quality=60,width=1920/Consumer/Homepage_New_Stock_30661da3b5.jpg",
+      "https://b2c-cdn.carsome.id/cdn-cgi/image/format=auto,quality=60,width=1920/Consumer/Homepage_Trade_in_2025_f0d811486d.jpg",
     link: "https://lelangmobil.com",
   },
 ]

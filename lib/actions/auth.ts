@@ -99,6 +99,18 @@ export async function signUp(formData: FormData) {
     // Check if user was created successfully
     if (authData?.user) {
       revalidatePath("/", "layout")
+      
+      // Check if email confirmation is required
+      const emailConfirmed = authData.user.email_confirmed_at || authData.user.confirmed_at
+      
+      if (!emailConfirmed) {
+        return {
+          success: true,
+          message: "Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.",
+          needsEmailVerification: true,
+        }
+      }
+      
       return {
         success: true,
         message: "Registrasi berhasil! Anda dapat langsung login.",

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useCallback } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
@@ -40,81 +40,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
-  const isMountedRef = useRef(true)
-
-  useEffect(() => {
-    isMountedRef.current = true
-
-    async function checkAdmin() {
-      try {
-        const supabase = createBrowserClient()
-        if (!supabase) {
-          console.error("Supabase client not available")
-          router.push("/login")
-          return
-        }
-
-        const { data: { user }, error: userError } = await supabase.auth.getUser()
-
-        if (!isMountedRef.current) return
-
-        if (userError || !user) {
-          console.error("User not authenticated:", userError)
-          router.push("/login")
-          return
-        }
-
-        console.log("Checking admin status for user:", user.id)
-
-        const { data: profile, error: profileError } = await supabase
-          .from("users")
-          .select("is_admin, role")
-          .eq("id", user.id)
-          .single()
-
-        if (!isMountedRef.current) return
-
-        if (profileError) {
-          console.error("Profile fetch error:", profileError)
-          // If table doesn't exist, allow access temporarily
-          if (profileError.code === "42P01" || profileError.code === "PGRST116") {
-            console.warn("Users table not ready, allowing admin access")
-            setIsAdmin(true)
-            return
-          }
-          router.push("/dashboard")
-          return
-        }
-
-        console.log("Profile data:", profile)
-
-        const adminStatus = profile?.is_admin === true || profile?.role === "admin"
-
-        if (!adminStatus) {
-          console.warn("User is not admin:", { is_admin: profile?.is_admin, role: profile?.role })
-          alert("Akses ditolak. Anda bukan admin.")
-          router.push("/dashboard")
-          return
-        }
-
-        console.log("Admin access granted")
-        setIsAdmin(true)
-      } catch (error) {
-        console.error("Admin check error:", error)
-        if (isMountedRef.current) {
-          alert("Terjadi kesalahan saat memeriksa akses admin")
-          router.push("/login")
-        }
-      }
-    }
-
-    checkAdmin()
-
-    return () => {
-      isMountedRef.current = false
-    }
-  }, [router])
 
   const handleLogout = useCallback(async () => {
     try {
@@ -125,17 +50,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
     router.push("/login")
   }, [router])
-
-  if (isAdmin === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-sm text-muted-foreground">Memeriksa akses admin...</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-muted/30">
