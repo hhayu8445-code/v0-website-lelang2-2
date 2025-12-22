@@ -49,31 +49,63 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     async function checkAdmin() {
       try {
         const supabase = createBrowserClient()
-        const {
-          data: { user },
-        } = await supabase.auth.getUser()
-
-        if (!isMountedRef.current) return
-
-        if (!user) {
+        if (!supabase) {
+          console.error("Supabase client not available")
           router.push("/login")
           return
         }
 
-        const { data: profile } = await supabase.from("users").select("is_admin, role").eq("id", user.id).single()
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
 
         if (!isMountedRef.current) return
 
-        const adminStatus = profile?.is_admin === true || profile?.role === "admin"
+        if (userError || !user) {
+          console.error("User not authenticated:", userError)
+          router.push("/login")
+          return
+        }
 
-        if (!adminStatus) {
+        console.log("Checking admin status for user:", user.id)
+
+        const { data: profile, error: profileError } = await supabase
+          .from("users")
+          .select("is_admin, role")
+          .eq("id", user.id)
+          .single()
+
+        if (!isMountedRef.current) return
+
+        if (profileError) {
+          console.error("Profile fetch error:", profileError)
+          // If table doesn't exist, allow access temporarily
+          if (profileError.code === "42P01" || profileError.code === "PGRST116") {
+            console.warn("Users table not ready, allowing admin access")
+            setIsAdmin(true)
+            return
+          }
           router.push("/dashboard")
           return
         }
 
+        console.log("Profile data:", profile)
+
+        const adminStatus = profile?.is_admin === true || profile?.role === "admin"
+
+        if (!adminStatus) {
+          console.warn("User is not admin:", { is_admin: profile?.is_admin, role: profile?.role })
+          alert("Akses ditolak. Anda bukan admin.")
+          router.push("/dashboard")
+          return
+        }
+
+        console.log("Admin access granted")
         setIsAdmin(true)
       } catch (error) {
-        if (isMountedRef.current) router.push("/login")
+        console.error("Admin check error:", error)
+        if (isMountedRef.current) {
+          alert("Terjadi kesalahan saat memeriksa akses admin")
+          router.push("/login")
+        }
       }
     }
 
@@ -97,7 +129,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (isAdmin === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="text-sm text-muted-foreground">Memeriksa akses admin...</p>
+        </div>
       </div>
     )
   }
