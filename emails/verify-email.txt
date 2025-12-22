@@ -1,0 +1,28 @@
+LELANGMOBIL.COM - Verifikasi Email Anda
+================================================
+
+Terima kasih telah mendaftar di LELANGMOBIL.COM!
+
+Untuk melanjutkan, silakan verifikasi alamat email Anda dengan mengklik link berikut:
+
+{{ .ConfirmationURL }}
+
+Atau salin dan tempel link di atas ke browser Anda.
+
+BONUS SELAMAT DATANG
+---------------------
+Setelah verifikasi email dan KYC, Anda akan mendapatkan bonus Rp 2.500.000 di saldo akun Anda!
+
+KEAMANAN
+--------
+Jika Anda tidak mendaftar di LELANGMOBIL.COM, abaikan email ini dan password Anda akan tetap aman.
+
+---
+PT Balai Lelang Mobil
+Platform Lelang Mobil Terpercaya #1 di Indonesia
+
+Website: https://lelangmobil.com
+Email: support@lelangmobil.com
+Telepon: +62 21 1234 5678
+
+© 2024 PT Balai Lelang Mobil. All rights reserved.
