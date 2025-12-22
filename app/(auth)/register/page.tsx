@@ -15,6 +15,37 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [emailError, setEmailError] = useState("")
+  const [phoneError, setPhoneError] = useState("")
+
+  function validateEmail(email: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    return emailRegex.test(email) && email.length >= 5 && email.length <= 254
+  }
+
+  function validatePhone(phone: string): boolean {
+    const cleanPhone = phone.replace(/[\s-()]/g, "")
+    const phoneRegex = /^(\+62|62|0)[0-9]{9,12}$/
+    return phoneRegex.test(cleanPhone)
+  }
+
+  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const email = e.target.value
+    if (email && !validateEmail(email)) {
+      setEmailError("Format email tidak valid")
+    } else {
+      setEmailError("")
+    }
+  }
+
+  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const phone = e.target.value
+    if (phone && !validatePhone(phone)) {
+      setPhoneError("Format nomor telepon tidak valid (contoh: 08123456789)")
+    } else {
+      setPhoneError("")
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -22,8 +53,25 @@ export default function RegisterPage() {
     setError("")
 
     const formData = new FormData(e.currentTarget)
-
+    const email = formData.get("email") as string
+    const phone = formData.get("phone") as string
     const password = formData.get("password") as string
+
+    // Validate email
+    if (!validateEmail(email)) {
+      setError("Format email tidak valid. Contoh: nama@email.com")
+      setLoading(false)
+      return
+    }
+
+    // Validate phone
+    if (!validatePhone(phone)) {
+      setError("Format nomor telepon tidak valid. Contoh: 08123456789 atau +6281234567890")
+      setLoading(false)
+      return
+    }
+
+    // Validate password
     if (password.length < 8) {
       setError("Password harus minimal 8 karakter.")
       setLoading(false)
@@ -121,11 +169,13 @@ export default function RegisterPage() {
                 id="phone"
                 name="phone"
                 type="tel"
-                placeholder="08123456789"
+                placeholder="08123456789 atau +6281234567890"
                 required
                 disabled={loading}
+                onChange={handlePhoneChange}
                 className="h-11 bg-white/5 border-white/10"
               />
+              {phoneError && <p className="text-xs text-destructive">{phoneError}</p>}
             </div>
 
             <div className="space-y-2">
@@ -139,8 +189,10 @@ export default function RegisterPage() {
                 placeholder="nama@email.com"
                 required
                 disabled={loading}
+                onChange={handleEmailChange}
                 className="h-11 bg-white/5 border-white/10"
               />
+              {emailError && <p className="text-xs text-destructive">{emailError}</p>}
             </div>
 
             <div className="space-y-2">
@@ -172,7 +224,7 @@ export default function RegisterPage() {
             <Button
               type="submit"
               className="w-full h-11 bg-gradient-to-r from-primary to-red-700 hover:from-primary/90 hover:to-red-700/90"
-              disabled={loading}
+              disabled={loading || !!emailError || !!phoneError}
             >
               {loading ? (
                 <>
