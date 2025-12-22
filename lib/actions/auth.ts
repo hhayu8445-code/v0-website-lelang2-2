@@ -89,11 +89,11 @@ export async function signUp(formData: FormData) {
         // User might be created, allow them to login
         return {
           success: true,
-          message: "Registrasi berhasil! Anda dapat langsung login. (Email verifikasi tidak terkirim, silakan hubungi admin jika ada masalah)",
+          message: "Registrasi berhasil! Silakan login untuk melanjutkan. (Email verifikasi sedang dalam proses)",
           needsEmailVerification: false,
         }
       }
-      return { error: `Gagal mendaftar: ${authError.message}` }
+      return { error: "Gagal mendaftar. Silakan coba lagi atau hubungi admin." }
     }
 
     // Check if user was created successfully
