@@ -107,16 +107,13 @@ export default function RegisterPage() {
             </div>
             <CardTitle className="text-xl sm:text-2xl font-bold">Registrasi Berhasil!</CardTitle>
             <CardDescription className="text-sm sm:text-base">
-              Kami telah mengirimkan email verifikasi ke alamat email Anda. Silakan cek inbox atau folder spam.
+              Akun Anda telah berhasil dibuat. Silakan login untuk melanjutkan.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Link href="/login">
-              <Button className="w-full h-11 bg-gradient-to-r from-primary to-red-700">Kembali ke Login</Button>
+              <Button className="w-full h-11 bg-gradient-to-r from-primary to-red-700">Login Sekarang</Button>
             </Link>
-            <p className="text-xs text-center text-muted-foreground">
-              Tidak menerima email? <button className="text-primary hover:underline">Kirim ulang</button>
-            </p>
           </CardContent>
         </Card>
       </div>

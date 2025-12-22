@@ -48,6 +48,17 @@ export async function signUp(formData: FormData) {
   const redirectUrl = process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${siteUrl}/auth/callback`
 
   try {
+    // Check if email already exists
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('email')
+      .eq('email', email)
+      .single()
+
+    if (existingUser) {
+      return { error: "Email sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda." }
+    }
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -69,18 +80,33 @@ export async function signUp(formData: FormData) {
       if (authError.message.includes("password")) {
         return { error: "Password harus minimal 8 karakter dan mengandung kombinasi huruf dan angka." }
       }
-      if (authError.message.includes("email")) {
-        return { error: `Format email tidak valid: ${authError.message}` }
+      if (authError.message.includes("email") && !authError.message.includes("Error sending")) {
+        return { error: "Format email tidak valid." }
+      }
+      // Handle email service errors gracefully
+      if (authError.message.includes("Error sending") || authError.message.includes("confirmation email")) {
+        console.warn("Email service error, but user may be created:", authError.message)
+        // User might be created, allow them to login
+        return {
+          success: true,
+          message: "Registrasi berhasil! Anda dapat langsung login. (Email verifikasi tidak terkirim, silakan hubungi admin jika ada masalah)",
+          needsEmailVerification: false,
+        }
       }
       return { error: `Gagal mendaftar: ${authError.message}` }
     }
 
-    revalidatePath("/", "layout")
-    return {
-      success: true,
-      message: "Registrasi berhasil! Silakan cek email untuk verifikasi.",
-      needsEmailVerification: true,
+    // Check if user was created successfully
+    if (authData?.user) {
+      revalidatePath("/", "layout")
+      return {
+        success: true,
+        message: "Registrasi berhasil! Anda dapat langsung login.",
+        needsEmailVerification: false,
+      }
     }
+
+    return { error: "Gagal membuat akun. Silakan coba lagi." }
   } catch (error) {
     console.error("Unexpected signup error:", error)
     return { error: "Terjadi kesalahan sistem. Silakan coba lagi nanti." }
