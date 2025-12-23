@@ -60,7 +60,7 @@ export function useRealtimeVehicles(filters?: {
           schema: "public",
           table: "vehicles",
         },
-        (payload) => {
+        (payload: any) => {
           if (payload.eventType === "INSERT") {
             const newVehicle = payload.new as Vehicle
             setVehicles(prev => [newVehicle, ...prev])

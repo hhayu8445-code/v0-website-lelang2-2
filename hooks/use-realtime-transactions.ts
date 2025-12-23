@@ -51,7 +51,7 @@ export function useRealtimeTransactions(userId: string | undefined) {
           table: "transactions",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const newTransaction = payload.new as Transaction
           setTransactions(prev => [newTransaction, ...prev])
         }
@@ -64,7 +64,7 @@ export function useRealtimeTransactions(userId: string | undefined) {
           table: "transactions",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const updated = payload.new as Transaction
           setTransactions(prev =>
             prev.map(t => t.id === updated.id ? updated : t)

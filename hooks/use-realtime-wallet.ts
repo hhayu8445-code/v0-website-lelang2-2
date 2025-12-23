@@ -65,7 +65,7 @@ export function useRealtimeWallet(userId: string | undefined) {
           table: "users",
           filter: `id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const updated = payload.new as any
           const walletBalance = updated.wallet_balance || 0
           const bonusBalance = updated.bonus_balance || 0
