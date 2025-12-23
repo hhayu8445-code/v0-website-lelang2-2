@@ -1,0 +1,236 @@
+ check_name  
+-------------
+ USERS TABLE
+(1 row)
+
+         column_name         |        data_type         | is_nullable 
+-----------------------------+--------------------------+-------------
+ id                          | uuid                     | NO
+ email                       | character varying        | NO
+ full_name                   | character varying        | YES
+ phone                       | character varying        | YES
+ address                     | text                     | YES
+ city                        | character varying        | YES
+ province                    | character varying        | YES
+ postal_code                 | character varying        | YES
+ kyc_status                  | character varying        | YES
+ wallet_balance              | numeric                  | NO
+ is_admin                    | boolean                  | YES
+ created_at                  | timestamp with time zone | NO
+ updated_at                  | timestamp with time zone | NO
+ avatar_url                  | text                     | YES
+ role                        | text                     | YES
+ bonus_balance               | numeric                  | YES
+ auction_participation_count | integer                  | YES
+ id_card_number              | text                     | YES
+ user_id                     | character varying        | YES
+ country                     | text                     | YES
+(20 rows)
+
+   check_name   
+----------------
+ VEHICLES TABLE
+(1 row)
+
+    column_name     |        data_type         | is_nullable 
+--------------------+--------------------------+-------------
+ id                 | uuid                     | NO
+ seller_id          | uuid                     | YES
+ title              | character varying        | NO
+ brand              | character varying        | NO
+ model              | character varying        | NO
+ year               | integer                  | NO
+ mileage            | integer                  | YES
+ transmission       | character varying        | YES
+ fuel_type          | character varying        | YES
+ color              | character varying        | YES
+ description        | text                     | YES
+ starting_price     | numeric                  | NO
+ current_bid        | numeric                  | YES
+ reserve_price      | numeric                  | YES
+ auction_status     | character varying        | YES
+ auction_start_time | timestamp with time zone | YES
+ auction_end_time   | timestamp with time zone | YES
+ image_urls         | ARRAY                    | YES
+ document_url       | text                     | YES
+ created_at         | timestamp with time zone | NO
+ updated_at         | timestamp with time zone | NO
+ plate_number       | text                     | YES
+ engine_capacity    | text                     | YES
+ stnk_valid_until   | date                     | YES
+ view_count         | integer                  | YES
+ buy_now_price      | numeric                  | YES
+ condition          | text                     | YES
+ location           | text                     | YES
+ winner_id          | uuid                     | YES
+ bid_count          | integer                  | YES
+(30 rows)
+
+ check_name 
+------------
+ BIDS TABLE
+(1 row)
+
+ column_name |        data_type         | is_nullable 
+-------------+--------------------------+-------------
+ id          | uuid                     | NO
+ vehicle_id  | uuid                     | YES
+ bidder_id   | uuid                     | YES
+ bid_amount  | numeric                  | NO
+ status      | character varying        | YES
+ created_at  | timestamp with time zone | NO
+ is_auto_bid | boolean                  | YES
+ bid_time    | timestamp with time zone | YES
+(8 rows)
+
+     check_name     
+--------------------
+ TRANSACTIONS TABLE
+(1 row)
+
+     column_name     |        data_type         | is_nullable 
+---------------------+--------------------------+-------------
+ id                  | uuid                     | NO
+ user_id             | uuid                     | YES
+ transaction_type    | character varying        | NO
+ amount              | numeric                  | NO
+ status              | character varying        | YES
+ payment_method      | character varying        | YES
+ payment_proof_url   | text                     | YES
+ description         | text                     | YES
+ reference_id        | uuid                     | YES
+ created_at          | timestamp with time zone | NO
+ updated_at          | timestamp with time zone | NO
+ bank_account_name   | text                     | YES
+ bank_account_number | text                     | YES
+ reference_number    | text                     | YES
+ notes               | text                     | YES
+ vehicle_id          | uuid                     | YES
+ type                | text                     | YES
+(17 rows)
+
+       check_name        
+-------------------------
+ KYC_VERIFICATIONS TABLE
+(1 row)
+
+   column_name    |        data_type         | is_nullable 
+------------------+--------------------------+-------------
+ id               | uuid                     | NO
+ user_id          | uuid                     | YES
+ id_type          | character varying        | NO
+ id_number        | character varying        | NO
+ id_image_url     | text                     | NO
+ selfie_image_url | text                     | NO
+ status           | character varying        | YES
+ rejection_reason | text                     | YES
+ verified_at      | timestamp with time zone | YES
+ verified_by      | uuid                     | YES
+ created_at       | timestamp with time zone | NO
+ updated_at       | timestamp with time zone | NO
+ id_card_photo    | text                     | YES
+ selfie_photo     | text                     | YES
+ npwp_number      | text                     | YES
+(15 rows)
+
+     check_name      
+---------------------
+ NOTIFICATIONS TABLE
+(1 row)
+
+ column_name |        data_type         | is_nullable 
+-------------+--------------------------+-------------
+ id          | uuid                     | NO
+ user_id     | uuid                     | YES
+ title       | character varying        | NO
+ message     | text                     | NO
+ type        | character varying        | NO
+ is_read     | boolean                  | YES
+ action_url  | text                     | YES
+ created_at  | timestamp with time zone | NO
+ read_status | boolean                  | YES
+(9 rows)
+
+     check_name     
+--------------------
+ TESTIMONIALS TABLE
+(1 row)
+
+    column_name    |        data_type         | is_nullable 
+-------------------+--------------------------+-------------
+ id                | uuid                     | NO
+ user_id           | uuid                     | YES
+ name              | character varying        | NO
+ email             | character varying        | YES
+ rating            | integer                  | NO
+ comment           | text                     | NO
+ image_url         | text                     | YES
+ is_active         | boolean                  | NO
+ is_approved       | boolean                  | NO
+ is_featured       | boolean                  | NO
+ created_at        | timestamp with time zone | NO
+ updated_at        | timestamp with time zone | NO
+ vehicle_id        | uuid                     | YES
+ images            | ARRAY                    | YES
+ verified_purchase | boolean                  | YES
+ role              | text                     | YES
+ content           | text                     | YES
+ avatar            | text                     | YES
+(18 rows)
+
+     check_name     
+--------------------
+ SITE_BANNERS TABLE
+(1 row)
+
+  column_name  |        data_type         | is_nullable 
+---------------+--------------------------+-------------
+ id            | uuid                     | NO
+ title         | character varying        | NO
+ subtitle      | text                     | YES
+ image_url     | text                     | NO
+ link_url      | text                     | YES
+ position      | character varying        | YES
+ is_active     | boolean                  | YES
+ display_order | integer                  | YES
+ created_at    | timestamp with time zone | NO
+ updated_at    | timestamp with time zone | NO
+(10 rows)
+
+     check_name      
+---------------------
+ SITE_SETTINGS TABLE
+(1 row)
+
+ column_name |        data_type         | is_nullable 
+-------------+--------------------------+-------------
+ id          | uuid                     | NO
+ key         | character varying        | NO
+ value       | text                     | YES
+ description | text                     | YES
+ created_at  | timestamp with time zone | NO
+ updated_at  | timestamp with time zone | NO
+(6 rows)
+
+     check_name     
+--------------------
+ SEO_METADATA TABLE
+(1 row)
+
+ column_name |        data_type         | is_nullable 
+-------------+--------------------------+-------------
+ id          | uuid                     | NO
+ page_path   | text                     | NO
+ title       | text                     | YES
+ description | text                     | YES
+ keywords    | ARRAY                    | YES
+ og_image    | text                     | YES
+ created_at  | timestamp with time zone | YES
+ updated_at  | timestamp with time zone | YES
+(8 rows)
+
+ report  | users | vehicles | bids | transactions | kyc | notifications | testimonials | banners | settings | seo 
+---------+-------+----------+------+--------------+-----+---------------+--------------+---------+----------+-----
+ SUMMARY |     5 |        3 |    0 |            0 |   0 |             0 |           24 |       3 |       23 |   6
+(1 row)
+
