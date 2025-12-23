@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -8,7 +8,7 @@ import { formatDate, formatRupiah } from "@/lib/utils/format"
 export const dynamic = "force-dynamic"
 
 async function getUsers() {
-  const supabase = await createServerClient()
+  const supabase = await getSupabaseServerClient()
 
   if (!supabase) {
     return []

@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +11,7 @@ import { formatDate } from "@/lib/utils/format"
 export const dynamic = "force-dynamic"
 
 async function getKycSubmissions(status?: string) {
-  const supabase = await createServerClient()
+  const supabase = await getSupabaseServerClient()
 
   if (!supabase) {
     return []

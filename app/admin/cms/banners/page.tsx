@@ -1,4 +1,4 @@
-import { createServerClient } from "@/lib/supabase/server"
+import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -9,7 +9,7 @@ import { BannerActions } from "@/components/admin/banner-actions"
 export const dynamic = "force-dynamic"
 
 export default async function BannersPage() {
-  const supabase = await createServerClient()
+  const supabase = await getSupabaseServerClient()
 
   if (!supabase) {
     return (
