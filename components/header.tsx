@@ -7,6 +7,7 @@ import Image from "next/image"
 
 export async function Header() {
   const user = await getCurrentUser()
+  const isAdmin = user && (user.is_admin === true || user.role === 'admin')
 
   return (
     <header className="sticky top-0 z-50 w-full glass border-b border-white/10">
@@ -44,7 +45,7 @@ export async function Header() {
         <div className="flex items-center gap-2 sm:gap-3">
           {user ? (
             <>
-              {(user.is_admin === true || user.role === 'admin') && (
+              {isAdmin && (
                 <Link href="/admin">
                   <Button size="sm" className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-lg h-9 sm:h-10">
                     <Shield className="h-4 w-4 sm:mr-2" />
@@ -94,7 +95,7 @@ export async function Header() {
             </>
           )}
 
-          <MobileNav isLoggedIn={!!user} isAdmin={user?.is_admin === true || user?.role === 'admin'} />
+          <MobileNav isLoggedIn={!!user} isAdmin={isAdmin || false} />
         </div>
       </div>
     </header>
