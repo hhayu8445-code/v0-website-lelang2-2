@@ -25,7 +25,7 @@ export function useRealtimeNotifications(userId: string | undefined) {
 
       if (!error && data) {
         setNotifications(data as Notification[])
-        setUnreadCount(data.filter(n => !n.read_status).length)
+        setUnreadCount(data.filter((n: Notification) => !n.read_status).length)
       }
     } catch (error) {
       console.error("Error fetching notifications:", error)
@@ -94,7 +94,7 @@ export function useRealtimeNotifications(userId: string | undefined) {
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const newNotification = payload.new as Notification
           setNotifications(prev => [newNotification, ...prev])
           setUnreadCount(prev => prev + 1)
@@ -116,7 +116,7 @@ export function useRealtimeNotifications(userId: string | undefined) {
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const updated = payload.new as Notification
           setNotifications(prev =>
             prev.map(n => n.id === updated.id ? updated : n)

@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Wallet,
   Shield,
+  ShieldCheck,
   User,
   Bell,
   LogOut,
