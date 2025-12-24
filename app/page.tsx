@@ -7,7 +7,6 @@ import { VehicleCard } from "@/components/vehicle-card"
 import dynamic from "next/dynamic"
 import { getVehicles } from "@/lib/actions/vehicles"
 import { getTestimonials } from "@/lib/actions/testimonials"
-import { TESTIMONIALS_SAMPLE } from "@/lib/constants"
 import { Search, ArrowRight, CheckCircle2, Car, MessageCircle } from "lucide-react"
 import Image from "next/image"
 import { DynamicBanner } from "@/components/dynamic-banner"
@@ -47,7 +46,6 @@ export default async function HomePage() {
   try {
     allVehicles = await getVehicles({ status: "live" })
   } catch (error) {
-    console.log("[v0] Using sample vehicles data during build")
     allVehicles = []
   }
 
@@ -56,11 +54,10 @@ export default async function HomePage() {
   try {
     dbTestimonials = await getTestimonials()
   } catch (error) {
-    console.log("[v0] Using sample testimonials data during build")
     dbTestimonials = []
   }
 
-  const testimonials = dbTestimonials.length > 0 ? dbTestimonials : TESTIMONIALS_SAMPLE
+  const testimonials = dbTestimonials
 
   const categories = [
     {

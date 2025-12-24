@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { Plus, Eye, Edit, Car, Clock, CheckCircle } from "lucide-react"
 import { formatDate, formatRupiah } from "@/lib/utils/format"
-import { SAMPLE_VEHICLES } from "@/lib/constants"
+
 
 export const dynamic = "force-dynamic"
 
@@ -16,7 +16,7 @@ async function getVehicles(status?: string) {
     const supabase = await getSupabaseServerClient()
 
     if (!supabase) {
-      return filterVehiclesByStatus(status)
+      return []
     }
 
     let query = supabase
@@ -33,24 +33,14 @@ async function getVehicles(status?: string) {
 
     const { data, error } = await query
 
-    if (error || !data || data.length === 0) {
-      return filterVehiclesByStatus(status)
+    if (error || !data) {
+      return []
     }
 
     return data
   } catch {
-    return filterVehiclesByStatus(status)
+    return []
   }
-}
-
-function filterVehiclesByStatus(status?: string) {
-  const vehicles = SAMPLE_VEHICLES.map((v) => ({
-    ...v,
-    users: { full_name: "Admin" },
-  }))
-
-  if (!status) return vehicles
-  return vehicles.filter((v) => v.auction_status === status)
 }
 
 export default async function AdminLelangPage() {
