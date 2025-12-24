@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     "mobil second",
     "balai lelang mobil",
   ],
-  authors: [{ name: "PT BALAI LELANG MOBIL" }],
-  creator: "PT BALAI LELANG MOBIL",
-  publisher: "PT BALAI LELANG MOBIL",
+  authors: [{ name: "Lelang Mobil Indonesia" }],
+  creator: "Lelang Mobil Indonesia",
+  publisher: "Lelang Mobil Indonesia",
   robots: {
     index: true,
     follow: true,
@@ -112,7 +112,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "PT Balai Lelang Mobil",
+              name: "Lelang Mobil Indonesia",
               alternateName: "LELANGMOBIL.COM",
               url: "https://lelangmobil.com",
               logo: "https://lelangmobil.com/logo.png",

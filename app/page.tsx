@@ -260,7 +260,7 @@ export default async function HomePage() {
               <div className="relative h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px]">
                 <Image
                   src="/placeholder.svg?height=500&width=1200"
-                  alt="PT Balai Lelang Mobil - Showroom"
+                  alt="Lelang Mobil Indonesia - Showroom"
                   fill
                   className="object-cover"
                   priority
@@ -275,7 +275,7 @@ export default async function HomePage() {
                     Showroom Resmi Terdaftar
                   </Badge>
                   <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-2xl">
-                    PT BALAI LELANG MOBIL
+                    LELANG MOBIL INDONESIA
                   </h2>
                   <p className="text-sm sm:text-lg md:text-xl text-white/90 drop-shadow-lg">
                     Showroom modern dengan koleksi mobil lelang terlengkap di Indonesia

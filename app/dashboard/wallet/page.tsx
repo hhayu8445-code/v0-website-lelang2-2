@@ -295,9 +295,10 @@ export default function WalletPage() {
                       <AlertDescription className="text-sm">
                         Transfer ke: <strong>{selectedBank.toUpperCase()}</strong>
                         <br />
-                        No. Rek: <strong>1234567890</strong>
-                        <br />
-                        a.n. <strong>PT BALAI LELANG MOBIL</strong>
+                        <span className="text-muted-foreground text-xs">
+                          Nomor rekening akan ditampilkan setelah Anda memilih nominal deposit.
+                          Hubungi admin untuk informasi rekening tujuan.
+                        </span>
                       </AlertDescription>
                     </Alert>
                   )}
