@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createBrowserClient } from "@/lib/supabase/client"
 import { ArrowLeft, Upload, X, Loader2, AlertCircle, ImageIcon } from "lucide-react"
 import Link from "next/link"
-import { SAMPLE_VEHICLES } from "@/lib/constants"
 import { validateImageFile } from "@/lib/utils/file-validation"
 
 const BRANDS = [
@@ -42,7 +41,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
   const [existingImages, setExistingImages] = useState<string[]>([])
   const [newImages, setNewImages] = useState<File[]>([])
   const [newImagePreviews, setNewImagePreviews] = useState<string[]>([])
-  const [usingSampleData, setUsingSampleData] = useState(false)
   const [uploadProgress, setUploadProgress] = useState<string>("")
 
   const [formData, setFormData] = useState({
@@ -71,14 +69,16 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
     try {
       const supabase = createBrowserClient()
       if (!supabase) {
-        loadFromSampleData()
+        setError("Database tidak tersedia")
+        setLoading(false)
         return
       }
 
       const { data, error } = await supabase.from("vehicles").select("*").eq("id", id).single()
 
       if (error || !data) {
-        loadFromSampleData()
+        setError("Kendaraan tidak ditemukan")
+        setLoading(false)
         return
       }
 
@@ -101,38 +101,10 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
       })
       setExistingImages(data.images || [])
     } catch {
-      loadFromSampleData()
+      setError("Terjadi kesalahan saat memuat data")
     } finally {
       setLoading(false)
     }
-  }
-
-  function loadFromSampleData() {
-    const sampleVehicle = SAMPLE_VEHICLES.find((v) => v.id === id)
-    if (sampleVehicle) {
-      setFormData({
-        brand: sampleVehicle.brand,
-        model: sampleVehicle.model,
-        year: sampleVehicle.year,
-        mileage: sampleVehicle.mileage,
-        transmission: sampleVehicle.transmission,
-        fuel_type: sampleVehicle.fuel_type,
-        color: sampleVehicle.color,
-        starting_price: sampleVehicle.starting_price,
-        buy_now_price: 0,
-        condition: sampleVehicle.condition,
-        description: `${sampleVehicle.brand} ${sampleVehicle.model} tahun ${sampleVehicle.year} kondisi ${sampleVehicle.condition}`,
-        location: sampleVehicle.location,
-        auction_start_time: new Date().toISOString().slice(0, 16),
-        auction_end_time: sampleVehicle.auction_end_time?.replace("Z", "").slice(0, 16) || "",
-        auction_status: sampleVehicle.auction_status,
-      })
-      setExistingImages([...(sampleVehicle.images || [])])
-      setUsingSampleData(true)
-    } else {
-      setError("Kendaraan tidak ditemukan")
-    }
-    setLoading(false)
   }
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,13 +155,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
 
     if (existingImages.length + newImages.length === 0) {
       alert("Minimal 1 gambar kendaraan")
-      return
-    }
-
-    if (usingSampleData) {
-      alert(
-        "Data sample tidak dapat diedit. Silakan buat tabel database terlebih dahulu dengan menjalankan SQL script.",
-      )
       return
     }
 
@@ -310,22 +275,9 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
           <h1 className="text-2xl font-bold">Edit Lelang</h1>
           <p className="text-muted-foreground">
             Edit {formData.brand} {formData.model}
-            {usingSampleData && <span className="text-orange-500 ml-2">(Data Sample - Read Only)</span>}
           </p>
         </div>
       </div>
-
-      {usingSampleData && (
-        <Card className="border-orange-200 bg-orange-50">
-          <CardContent className="p-4">
-            <p className="text-sm text-orange-700">
-              <strong>Perhatian:</strong> Ini adalah data sample. Untuk mengedit data secara nyata, jalankan SQL script{" "}
-              <code className="bg-orange-100 px-1 rounded">scripts/001_complete_database_setup.sql</code> di Supabase
-              SQL Editor.
-            </p>
-          </CardContent>
-        </Card>
-      )}
 
       {uploadProgress && (
         <Card className="border-blue-200 bg-blue-50">
@@ -351,7 +303,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     <Select
                       value={formData.brand}
                       onValueChange={(val) => setFormData({ ...formData, brand: val })}
-                      disabled={usingSampleData}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih brand" />
@@ -372,7 +323,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                       value={formData.model}
                       onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                       required
-                      disabled={usingSampleData}
                     />
                   </div>
                 </div>
@@ -387,7 +337,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                       value={formData.year}
                       onChange={(e) => setFormData({ ...formData, year: Number.parseInt(e.target.value) })}
                       required
-                      disabled={usingSampleData}
                     />
                   </div>
                   <div className="space-y-2">
@@ -398,7 +347,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                       value={formData.mileage}
                       onChange={(e) => setFormData({ ...formData, mileage: Number.parseInt(e.target.value) })}
                       required
-                      disabled={usingSampleData}
                     />
                   </div>
                   <div className="space-y-2">
@@ -408,7 +356,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                       value={formData.color}
                       onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                       required
-                      disabled={usingSampleData}
                     />
                   </div>
                 </div>
@@ -419,7 +366,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     <Select
                       value={formData.transmission}
                       onValueChange={(val) => setFormData({ ...formData, transmission: val })}
-                      disabled={usingSampleData}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih transmisi" />
@@ -438,7 +384,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     <Select
                       value={formData.fuel_type}
                       onValueChange={(val) => setFormData({ ...formData, fuel_type: val })}
-                      disabled={usingSampleData}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih bahan bakar" />
@@ -457,7 +402,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     <Select
                       value={formData.condition}
                       onValueChange={(val) => setFormData({ ...formData, condition: val })}
-                      disabled={usingSampleData}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Pilih kondisi" />
@@ -480,7 +424,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     required
-                    disabled={usingSampleData}
                   />
                 </div>
 
@@ -492,7 +435,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     required
-                    disabled={usingSampleData}
                   />
                 </div>
               </CardContent>
@@ -518,15 +460,13 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                         alt={`Existing ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
-                      {!usingSampleData && (
-                        <button
-                          type="button"
-                          onClick={() => removeExistingImage(index)}
-                          className="absolute top-2 right-2 p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeExistingImage(index)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
                   ))}
                   {newImagePreviews.map((preview, index) => (
@@ -551,7 +491,7 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                       </button>
                     </div>
                   ))}
-                  {!usingSampleData && existingImages.length + newImages.length < 10 && (
+                  {existingImages.length + newImages.length < 10 && (
                     <label className="aspect-video border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
                       <Upload className="h-8 w-8 text-muted-foreground mb-2" />
                       <span className="text-sm text-muted-foreground font-medium">Upload</span>
@@ -593,7 +533,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                         setFormData({ ...formData, starting_price: Number.parseInt(e.target.value) || 0 })
                       }
                       required
-                      disabled={usingSampleData}
                     />
                   </div>
                 </div>
@@ -609,7 +548,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                       onChange={(e) =>
                         setFormData({ ...formData, buy_now_price: Number.parseInt(e.target.value) || 0 })
                       }
-                      disabled={usingSampleData}
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">Kosongkan jika tidak ada</p>
@@ -630,7 +568,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     value={formData.auction_start_time}
                     onChange={(e) => setFormData({ ...formData, auction_start_time: e.target.value })}
                     required
-                    disabled={usingSampleData}
                   />
                 </div>
                 <div className="space-y-2">
@@ -640,7 +577,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                     value={formData.auction_end_time}
                     onChange={(e) => setFormData({ ...formData, auction_end_time: e.target.value })}
                     required
-                    disabled={usingSampleData}
                   />
                 </div>
               </CardContent>
@@ -655,7 +591,6 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
                 <Select
                   value={formData.auction_status}
                   onValueChange={(val) => setFormData({ ...formData, auction_status: val })}
-                  disabled={usingSampleData}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih status" />
@@ -675,7 +610,7 @@ export default function EditLelangPage({ params }: { params: Promise<{ id: strin
               </CardContent>
             </Card>
 
-            <Button type="submit" className="w-full" size="lg" disabled={loading || saving || usingSampleData}>
+            <Button type="submit" className="w-full" size="lg" disabled={loading || saving}>
               {saving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
               {saving ? "Menyimpan..." : "Simpan Perubahan"}
             </Button>
