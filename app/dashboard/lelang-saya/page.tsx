@@ -4,8 +4,42 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Gavel, Trophy, Eye, XCircle, Clock, ArrowRight, Search } from "lucide-react"
+import { getCurrentUser } from "@/lib/actions/auth"
+import { createServerClient } from "@/lib/supabase/server"
 
-export default function MyAuctionsPage() {
+export default async function MyAuctionsPage() {
+  const user = await getCurrentUser()
+  const supabase = await createServerClient()
+  
+  let activeBidsCount = 0
+  let wonCount = 0
+  let watchlistCount = 0
+  let lostCount = 0
+  
+  if (supabase && user) {
+    // Count active bids
+    const { count: active } = await supabase
+      .from("bids")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active")
+    activeBidsCount = active || 0
+
+    // Count won auctions
+    const { count: won } = await supabase
+      .from("vehicles")
+      .select("*", { count: "exact", head: true })
+      .eq("winner_id", user.id)
+    wonCount = won || 0
+
+    // Count lost bids
+    const { count: lost } = await supabase
+      .from("bids")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "outbid")
+    lostCount = lost || 0
+  }
   return (
     <div className="space-y-6">
       <div>
@@ -19,12 +53,17 @@ export default function MyAuctionsPage() {
             <Gavel className="w-4 h-4" />
             Aktif
             <Badge variant="secondary" className="ml-1">
-              0
+              {activeBidsCount}
             </Badge>
           </TabsTrigger>
           <TabsTrigger value="won" className="gap-2">
             <Trophy className="w-4 h-4" />
             Menang
+            {wonCount > 0 && (
+              <Badge variant="secondary" className="ml-1">
+                {wonCount}
+              </Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger value="watchlist" className="gap-2">
             <Eye className="w-4 h-4" />

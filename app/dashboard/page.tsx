@@ -9,6 +9,34 @@ import { Wallet, Gavel, Trophy, Eye, TrendingUp, ArrowRight, ShieldCheck, Gift, 
 export default async function DashboardPage() {
   const user = await getCurrentUser()
 
+  // Get real stats from database
+  const { createServerClient } = await import("@/lib/supabase/server")
+  const supabase = await createServerClient()
+  
+  let activeBids = 0
+  let wonAuctions = 0
+  let watchlistCount = 0
+  
+  if (supabase && user) {
+    // Count active bids
+    const { count: bidsCount } = await supabase
+      .from("bids")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("status", "active")
+    activeBids = bidsCount || 0
+
+    // Count won auctions
+    const { count: wonCount } = await supabase
+      .from("vehicles")
+      .select("*", { count: "exact", head: true })
+      .eq("winner_id", user.id)
+    wonAuctions = wonCount || 0
+
+    // Watchlist would need a separate table, for now use 0
+    watchlistCount = 0
+  }
+
   const stats = [
     {
       label: "Total Saldo",
@@ -19,21 +47,21 @@ export default async function DashboardPage() {
     },
     {
       label: "Lelang Aktif",
-      value: "3",
+      value: activeBids.toString(),
       icon: Gavel,
       color: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-100 dark:bg-blue-900/30",
     },
     {
       label: "Dimenangkan",
-      value: "0",
+      value: wonAuctions.toString(),
       icon: Trophy,
       color: "text-amber-600 dark:text-amber-400",
       bgColor: "bg-amber-100 dark:bg-amber-900/30",
     },
     {
       label: "Watchlist",
-      value: "5",
+      value: watchlistCount.toString(),
       icon: Eye,
       color: "text-emerald-600 dark:text-emerald-400",
       bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
