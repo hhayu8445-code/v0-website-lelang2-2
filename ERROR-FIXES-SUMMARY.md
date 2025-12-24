@@ -84,6 +84,27 @@ https://vercel.com/hah-cc4988b5/v0-website-lelang2-2/deployments
 
 ---
 
+### **Error 4: Missing Images Column**
+```
+Could not find the 'images' column of 'vehicles' in the schema cache
+Location: Supabase Database
+```
+
+**Fix:**
+```sql
+-- Run in Supabase SQL Editor
+ALTER TABLE vehicles ADD COLUMN images TEXT[];
+```
+
+**Steps:**
+1. Open Supabase Dashboard → SQL Editor
+2. Run: `scripts/FIX_ADD_IMAGES_COLUMN.sql`
+3. Refresh Schema Cache (Settings → API → Refresh)
+
+**Guide:** See `FIX-IMAGES-COLUMN-ERROR.md`
+
+---
+
 ## 🎉 DONE!
 
 All errors fixed and deployed to production!

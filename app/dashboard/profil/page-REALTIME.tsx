@@ -21,6 +21,7 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<UserType | null>(null)
 
+  // Form state
   const [formData, setFormData] = useState({
     full_name: "",
     phone: "",
@@ -32,12 +33,14 @@ export default function ProfilePage() {
     country: "Indonesia",
   })
 
+  // Password state
   const [passwordData, setPasswordData] = useState({
     current: "",
     new: "",
     confirm: "",
   })
 
+  // Load user data
   useEffect(() => {
     loadUserData()
   }, [])
@@ -51,6 +54,7 @@ export default function ProfilePage() {
         return
       }
 
+      // Get current user
       const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
       
       if (authError || !authUser) {
@@ -58,6 +62,7 @@ export default function ProfilePage() {
         return
       }
 
+      // Get user profile
       const { data, error: profileError } = await supabase
         .from("users")
         .select("*")
@@ -115,6 +120,8 @@ export default function ProfilePage() {
 
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
+      
+      // Reload data
       await loadUserData()
     } catch (err: any) {
       setError(err.message || "Gagal menyimpan profil")
@@ -216,6 +223,7 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            {/* Full Name */}
             <div className="space-y-2 w-full">
               <Label htmlFor="fullName" className="text-sm font-medium flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -229,6 +237,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* Email (Read-only) */}
             <div className="space-y-2 w-full">
               <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
                 <Mail className="w-4 h-4" />
@@ -240,6 +249,7 @@ export default function ProfilePage() {
               <Input id="email" type="email" value={user.email} disabled className="w-full" />
             </div>
 
+            {/* Phone */}
             <div className="space-y-2 w-full">
               <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
                 <Phone className="w-4 h-4" />
@@ -255,6 +265,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* ID Card Number */}
             <div className="space-y-2 w-full">
               <Label htmlFor="idCard" className="text-sm font-medium flex items-center gap-2">
                 <CreditCard className="w-4 h-4" />
@@ -269,6 +280,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* Address */}
             <div className="space-y-2 w-full md:col-span-2">
               <Label htmlFor="address" className="text-sm font-medium flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
@@ -284,6 +296,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* City */}
             <div className="space-y-2 w-full">
               <Label htmlFor="city" className="text-sm font-medium">
                 Kota
@@ -297,6 +310,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* Province */}
             <div className="space-y-2 w-full">
               <Label htmlFor="province" className="text-sm font-medium">
                 Provinsi
@@ -310,6 +324,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* Postal Code */}
             <div className="space-y-2 w-full">
               <Label htmlFor="postalCode" className="text-sm font-medium">
                 Kode Pos
@@ -323,6 +338,7 @@ export default function ProfilePage() {
               />
             </div>
 
+            {/* KYC Status */}
             <div className="space-y-2 w-full">
               <Label className="text-sm font-medium">Status KYC</Label>
               <div className="flex items-center h-10">
