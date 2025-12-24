@@ -42,10 +42,25 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Protect admin routes
-    if (request.nextUrl.pathname.startsWith("/admin") && (!user || user.email !== "admin@lelangmobil.com")) {
-      const loginUrl = new URL("/login", request.url)
-      loginUrl.searchParams.set("redirect", "/admin")
-      return NextResponse.redirect(loginUrl)
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      if (!user) {
+        const loginUrl = new URL("/login", request.url)
+        loginUrl.searchParams.set("redirect", "/admin")
+        return NextResponse.redirect(loginUrl)
+      }
+
+      // Check if user is admin from database
+      const { data: profile } = await supabase
+        .from('users')
+        .select('is_admin, role')
+        .eq('id', user.id)
+        .single()
+
+      const isAdmin = profile?.is_admin === true || profile?.role === 'admin'
+
+      if (!isAdmin) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
     }
 
     // Protect dashboard routes
