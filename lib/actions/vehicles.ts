@@ -4,36 +4,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import type { Vehicle, Bid } from "@/lib/types"
 import { sanitizeString, sanitizeNumber } from "@/lib/utils/validation"
-import { SAMPLE_VEHICLES } from "@/lib/constants"
 import { monitorError } from "@/lib/ai/error-monitor"
-
-function getSampleVehicles(filters?: {
-  status?: string
-  brand?: string
-  location?: string
-  minPrice?: number
-  maxPrice?: number
-}): Vehicle[] {
-  let filtered = [...SAMPLE_VEHICLES] as unknown as Vehicle[]
-
-  if (filters?.status) {
-    filtered = filtered.filter((v) => v.auction_status === filters.status)
-  }
-  if (filters?.brand) {
-    filtered = filtered.filter((v) => v.brand.toLowerCase().includes(filters.brand!.toLowerCase()))
-  }
-  if (filters?.location) {
-    filtered = filtered.filter((v) => v.location === filters.location)
-  }
-  if (filters?.minPrice) {
-    filtered = filtered.filter((v) => v.starting_price >= filters.minPrice!)
-  }
-  if (filters?.maxPrice) {
-    filtered = filtered.filter((v) => v.starting_price <= filters.maxPrice!)
-  }
-
-  return filtered
-}
 
 export async function getVehicles(filters?: {
   status?: string
@@ -96,11 +67,6 @@ export async function getVehicles(filters?: {
 }
 
 export async function getVehicleById(id: string): Promise<Vehicle | null> {
-  const sampleVehicle = SAMPLE_VEHICLES.find((v) => v.id === id)
-  if (sampleVehicle) {
-    return sampleVehicle as unknown as Vehicle
-  }
-
   try {
     const supabase = await getSupabaseServerClient()
 

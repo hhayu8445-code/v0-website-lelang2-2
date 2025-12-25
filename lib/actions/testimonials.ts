@@ -1,7 +1,6 @@
 "use server"
 
 import { getSupabaseServerClient } from "@/lib/supabase/server"
-import { TESTIMONIALS_SAMPLE } from "@/lib/constants"
 import { monitorError } from "@/lib/ai/error-monitor"
 
 export interface Testimonial {
@@ -13,18 +12,6 @@ export interface Testimonial {
   vehicle?: string
   avatar?: string
   created_at?: string
-}
-
-function getSampleTestimonials(): Testimonial[] {
-  return TESTIMONIALS_SAMPLE.map((t) => ({
-    id: t.id,
-    name: t.name,
-    location: t.location,
-    rating: t.rating,
-    comment: t.comment,
-    vehicle: t.vehicle,
-    avatar: t.avatar,
-  }))
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
