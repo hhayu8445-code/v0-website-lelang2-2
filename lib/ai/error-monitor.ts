@@ -1,7 +1,5 @@
 "use server"
 
-import { analyzeAndFixError } from "./auto-fix"
-
 interface ErrorLog {
   timestamp: Date
   error: Error | string
@@ -13,14 +11,17 @@ interface ErrorLog {
 const errorLogs: ErrorLog[] = []
 
 /**
- * Global error monitoring and auto-fix system
- * Captures errors and attempts automatic fixes using AI
+ * Global error monitoring system
+ * Captures errors for debugging (AI features disabled)
  */
 export async function monitorError(
   error: Error | string,
   context?: Record<string, any>,
 ): Promise<{ logged: boolean; autoFixed: boolean; suggestion?: string }> {
-  console.error("[v0] Error detected:", error)
+  console.error("[Error Monitor]", error)
+  if (context) {
+    console.error("[Context]", context)
+  }
 
   // Log the error
   errorLogs.push({
@@ -29,41 +30,9 @@ export async function monitorError(
     fixed: false,
   })
 
-  // Attempt auto-fix with AI
-  try {
-    const analysis = await analyzeAndFixError({
-      error,
-      context,
-    })
-
-    if (analysis.confidence > 70) {
-      console.log("[v0] Auto-fix suggestion (confidence:", analysis.confidence + "):", analysis.fix)
-
-      // Update log
-      const lastLog = errorLogs[errorLogs.length - 1]
-      if (lastLog) {
-        lastLog.fixed = true
-        lastLog.suggestion = analysis.fix
-      }
-
-      return {
-        logged: true,
-        autoFixed: true,
-        suggestion: analysis.fix,
-      }
-    }
-
-    return {
-      logged: true,
-      autoFixed: false,
-      suggestion: analysis.diagnosis,
-    }
-  } catch (aiError) {
-    console.error("[v0] AI monitoring failed:", aiError)
-    return {
-      logged: true,
-      autoFixed: false,
-    }
+  return {
+    logged: true,
+    autoFixed: false,
   }
 }
 
