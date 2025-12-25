@@ -1,0 +1,24 @@
+{
+  "name": "LELANGMOBIL.COM - Platform Lelang Mobil Terpercaya",
+  "short_name": "LelangMobil",
+  "description": "Platform lelang mobil terpercaya #1 di Indonesia",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
